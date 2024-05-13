@@ -20,7 +20,7 @@ void STATE_1(int * state, wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar
         (*i) = 0; 
 
     }
-    else if(iswalpha(c)){
+    else if(iswalpha(c) || c == L'\''){
         (*state) = 3;
         word[(*i)++] = c;
     }
@@ -45,7 +45,7 @@ void STATE_2(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
 
         (*i) = 0; 
 
-    } else if(iswalpha(c)) {
+    } else if(iswalpha(c) || c == L'\'') {
         (*state) = 3;
         word[(*i)++] = c;
     } 
@@ -76,7 +76,7 @@ void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
         (*i) = 0;
 
     } 
-    else if(iswalpha(c)) word[(*i)++] = c;
+    else if(iswalpha(c) || c == L'\'') word[(*i)++] = c;
     else {
         (*state) = 2;
         word[(*i)] = '\0';

@@ -81,7 +81,7 @@ void writeCsv(MapPrev *mp, char * filename) {
 
 
         while(currPrevDict != NULL) {
-            fprintf(fout, "%s,", currPrevDict->word);
+            fwprintf(fout, L"%ls,", currPrevDict->word);
 
             // Compute Sum
             double sum = 0;
@@ -107,7 +107,7 @@ void writeCsv(MapPrev *mp, char * filename) {
                 Dictionary * currFreqDict = currMapFreq->buckets[j];
 
                 while(currFreqDict != NULL) {
-                    fprintf(fout, "%s,", currFreqDict->word);
+                    fwprintf(fout, L"%ls,", currFreqDict->word);
 
                     double prob = currFreqDict->frequency/sum;
                     //Convert the probability into a string to easily modify its format

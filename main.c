@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     }
 
     if(filename == NULL) {
-        printf("You have to provide for a filename: -f <filename>\n");
+        printf("You have to provide for a valid filename: -f <filename>\n");
         exit(EXIT_FAILURE);
     }
 
@@ -95,12 +95,12 @@ int main(int argc, char *argv[]) {
     if(compito1Flag) {
         // Compito 1
         readFile(mp, filename);
-        printMapPrev(mp);
-        //writeCsv(mp, filename);
+        //printMapPrev(mp);
+        writeCsv(mp, filename);
 
     } else if(compito2Flag) {
-
         // Compito 2
+
         readCsv(mp, filename);
         //printMapPrev(mp);
         produceText(mp, nWords, prevWord);
@@ -114,7 +114,6 @@ int main(int argc, char *argv[]) {
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     printf("Time: %f ms\n", time_spent * 1000);
 
-    // Compito 2
 
     return 0;
 }

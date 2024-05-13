@@ -1,6 +1,3 @@
-csv.o
-file.o
-main.o
 solution
-states.o
-utils.o
+*.o
+*.py
