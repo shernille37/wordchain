@@ -7,7 +7,7 @@
 
 // State functionalities
 // State 1  ?,!,.
-void STATE_1(int * state, char * word, int *i, char c, MapPrev * mp, char * prev, char ** firstWord, int *first) {
+void STATE_1(int * state, wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t ** firstWord, int *first) {
 
     if(c == L'?' || c == L'!' || c == L'.') {
         word[(*i)++] = c;
@@ -15,12 +15,12 @@ void STATE_1(int * state, char * word, int *i, char c, MapPrev * mp, char * prev
         
         ifFirst(firstWord, first, word);
         insertMapPrev(mp, prev, word, -1);
-        strcpy(prev, word);
+        wcscpy(prev, word);
 
         (*i) = 0; 
 
     }
-    else if(isalpha(c) || c == L'\''){
+    else if(iswalpha(c)){
         (*state) = 3;
         word[(*i)++] = c;
     }
@@ -31,7 +31,7 @@ void STATE_1(int * state, char * word, int *i, char c, MapPrev * mp, char * prev
 
 
 // State 2 Separator
-void STATE_2(int * state,char * word, int *i, char c, MapPrev * mp, char * prev, char ** firstWord, int *first) {
+void STATE_2(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t ** firstWord, int *first) {
 
     if(c == L'?' || c == L'!' || c == L'.') {
 
@@ -41,11 +41,11 @@ void STATE_2(int * state,char * word, int *i, char c, MapPrev * mp, char * prev,
 
         ifFirst(firstWord, first, word);
         insertMapPrev(mp, prev, word, -1);
-        strcpy(prev, word);
+        wcscpy(prev, word);
 
         (*i) = 0; 
 
-    } else if(isalpha(c) || c == L'\'') {
+    } else if(iswalpha(c)) {
         (*state) = 3;
         word[(*i)++] = c;
     } 
@@ -56,7 +56,7 @@ void STATE_2(int * state,char * word, int *i, char c, MapPrev * mp, char * prev,
 
 
 // State 3 Letter
-void STATE_3(int * state,char * word, int *i, char c, MapPrev * mp, char * prev, char ** firstWord, int *first) {
+void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t ** firstWord, int *first) {
 
     if(c == L'?' || c == L'!' || c == L'.') {
         (*state) = 1;
@@ -66,17 +66,17 @@ void STATE_3(int * state,char * word, int *i, char c, MapPrev * mp, char * prev,
         ifFirst(firstWord, first, word);
         insertMapPrev(mp, prev, word, -1);
 
-        strcpy(prev, word);
+        wcscpy(prev, word);
         (*i) = 0;
 
         word[(*i)++] = c;
         word[(*i)] = '\0';
         insertMapPrev(mp, prev, word, -1);
-        strcpy(prev, word);
+        wcscpy(prev, word);
         (*i) = 0;
 
     } 
-    else if(isalpha(c) || c == L'\'') word[(*i)++] = c;
+    else if(iswalpha(c)) word[(*i)++] = c;
     else {
         (*state) = 2;
         word[(*i)] = '\0';
@@ -84,7 +84,7 @@ void STATE_3(int * state,char * word, int *i, char c, MapPrev * mp, char * prev,
         ifFirst(firstWord, first, word);
 
         insertMapPrev(mp, prev, word, -1);
-        strcpy(prev, word);
+        wcscpy(prev, word);
         (*i) = 0;
     } 
 

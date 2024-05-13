@@ -82,17 +82,17 @@ void removeZeros(char * str) {
     } 
 }
 
-void toLowerString(char * str) {
+void toLowerString(wchar_t * str) {
 
-    for(int i = 0; i < strlen(str); i++) {
+    for(int i = 0; i < wcslen(str); i++) {
         str[i] = towlower(str[i]);  
     }
 
 }
-void ifFirst(char ** firstword, int * first, char * word) {
+void ifFirst(wchar_t ** firstword, int * first, wchar_t * word) {
 
     if((*first)) {
-        (*firstword) = strdup(word);
+        (*firstword) = wcsdup(word);
         (*first) = 0;
 
     }

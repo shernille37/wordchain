@@ -19,21 +19,22 @@ void readFile(MapPrev * mp, char * fileName) {
         exit(0);
     }
     
-    char *word = malloc(30 * sizeof(char));
+    wchar_t *word = malloc(30 * sizeof(wchar_t));
 
     int first = 1;
-    char *firstWord = malloc(30 * sizeof(char));
+    wchar_t *firstWord = malloc(30 * sizeof(wchar_t));
 
-    char *prev = malloc(30 * sizeof(char)); // Previous String
-    prev = strdup("."); // Initialze
+    // Previous String
+    wchar_t *prev = malloc(30 * sizeof(wchar_t)); 
+    wcscpy(prev, L".");
 
     int i = 0;
-    int c;
+    wint_t c;
 
     int state = 1;
 
-    while((c = fgetc(fp) ) != EOF) {
-        c = (char) c;
+    while((c = fgetwc(fp) ) != EOF) {
+        c = (wchar_t) c;
 
         if(state == 1) STATE_1(&state,word, &i, c, mp, prev, &firstWord, &first);
         else if(state == 2) STATE_2(&state,word, &i, c, mp, prev, &firstWord, &first);

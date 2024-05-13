@@ -4,7 +4,7 @@
 #include "dict.h"
 
 // Hash Function
-unsigned int hash(const char * str, int bucketSize) {
+unsigned int hash(const wchar_t * str, int bucketSize) {
     unsigned int hash = 5381;
     int c;
 
@@ -52,7 +52,7 @@ void resizePrevDictionary(MapPrev * mp, int newSize) {
 
 }
 
-int searchMapPrev(MapPrev *mp, char * word) {
+int searchMapPrev(MapPrev *mp, wchar_t * word) {
 
     unsigned int index = hash(word, mp->nBuckets);
 
@@ -60,7 +60,7 @@ int searchMapPrev(MapPrev *mp, char * word) {
 
     while(prevDict != NULL) {
 
-        if(strcmp(prevDict->word, word) == 0) return 1;
+        if(wcscmp(prevDict->word, word) == 0) return 1;
 
         prevDict = prevDict->next;
 
@@ -70,7 +70,7 @@ int searchMapPrev(MapPrev *mp, char * word) {
 
 }
 
-void insertMapPrev(MapPrev * mp, char * prev, char * next, double prob) {
+void insertMapPrev(MapPrev * mp, wchar_t * prev, wchar_t * next, double prob) {
 
     // Resize if needed
     if((double)mp->size/mp->nBuckets > 0.7) {
@@ -82,7 +82,7 @@ void insertMapPrev(MapPrev * mp, char * prev, char * next, double prob) {
 
     while(current != NULL) {
 
-        if(strcmp(current->word, prev) == 0) {
+        if(wcscmp(current->word, prev) == 0) {
             MapFrequency *currMap = current->frequencyDict;
             insertMapFrequency(currMap, next, prob);
             return;
@@ -94,8 +94,8 @@ void insertMapPrev(MapPrev * mp, char * prev, char * next, double prob) {
 
     // If prev is not found (Possible Collision)
     PrevDictionary * newDict = malloc(sizeof(PrevDictionary));
-    newDict->word = malloc(30 * sizeof(char));
-    newDict->word = strdup(prev);
+    newDict->word = malloc(30 * sizeof(wchar_t));
+    newDict->word = wcsdup(prev);
     
 
     MapFrequency * mapFreq = initMapFrequency();
@@ -113,13 +113,11 @@ void printMapPrev(MapPrev * mp) {
         PrevDictionary *currPrevDict = mp->buckets[i];
         printf("Map Prev Index: %d\n", i);
         while(currPrevDict != NULL) {
-            printf("Prev: %s\n", currPrevDict->word);
+            wprintf(L"Prev: %ls\n", currPrevDict->word);
 
             printMapFrequency(currPrevDict->frequencyDict);
             
             currPrevDict = currPrevDict->next;
-
-
         }
 
 
@@ -196,7 +194,7 @@ void resizeDictionary(MapFrequency * map, int newSize) {
 }
 
 
-void insertMapFrequency(MapFrequency * map, char * word, double prob) {
+void insertMapFrequency(MapFrequency * map, wchar_t * word, double prob) {
 
     // Resize of Needed TODO
     if((double)map->size/map->nBuckets > 0.7) {
@@ -211,7 +209,7 @@ void insertMapFrequency(MapFrequency * map, char * word, double prob) {
         while(current != NULL) {
 
             // Word Found
-            if(strcmp(current->word, word) == 0) {
+            if(wcscmp(current->word, word) == 0) {
                 current->frequency++;
                 return;
             }
@@ -224,8 +222,8 @@ void insertMapFrequency(MapFrequency * map, char * word, double prob) {
     // Possible collision (Chaining)
 
     Dictionary * newDict = malloc(sizeof(Dictionary));
-    newDict->word = malloc(30 * sizeof(char));
-    newDict->word = strdup(word);
+    newDict->word = malloc(30 * sizeof(wchar_t));
+    newDict->word = wcsdup(word);
 
     newDict->frequency = prob == -1 ? 1 : prob;
 
@@ -242,7 +240,7 @@ void printMapFrequency(MapFrequency * map) {
         printf("Index %d: ", i);
         while(current != NULL) {
 
-            printf("%s : %f ->", current->word, current->frequency);
+            wprintf(L"%ls : %f ->", current->word, current->frequency);
             current = current->next;
 
         }

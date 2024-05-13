@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[]) {
 
-    setlocale(LC_ALL, "C.UTF-8");
+    setlocale(LC_ALL, "en_US.UTF-8");
     clock_t begin = clock();
 
     int opt;
@@ -95,8 +95,8 @@ int main(int argc, char *argv[]) {
     if(compito1Flag) {
         // Compito 1
         readFile(mp, filename);
-        //printMapPrev(mp);
-        writeCsv(mp, filename);
+        printMapPrev(mp);
+        //writeCsv(mp, filename);
 
     } else if(compito2Flag) {
 
