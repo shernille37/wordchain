@@ -155,37 +155,45 @@ void readCsv(MapPrev *mp, char * filename) {
         exit(EXIT_FAILURE);
     }
 
-    char * prev = malloc(30);
-    char * word = malloc(30);
+
+    wchar_t * prev;
+    wchar_t * word;
     double prob;
 
+    if ((prev = malloc(30 * sizeof(wchar_t))) == NULL) {
+        perror("Error:");
+        exit(EXIT_FAILURE);
+    }   
+    if ((word = malloc(30 * sizeof(wchar_t))) == NULL) {
+        perror("Error:");
+        exit(EXIT_FAILURE);
+    }
 
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
 
-    while( (read = getline(&line, &len, csvFile)) != -1 ) {
+    while(!feof(csvFile)) {
 
-        if(line[read - 1] == '\n') line[read - 1] = '\0';
+        wchar_t * line = readLine(csvFile);
 
-        char * token = strtok(line, ",");
-        prev = strdup(token);
+        wchar_t * pt;
+        wchar_t * token = wcstok(line, L",", &pt);
 
-        token = strtok(NULL, ",");
+        prev = wcsdup(token);
+
+        token = wcstok(NULL, L",", &pt);
 
         int counter = 0;
         while(token != NULL) {
 
-            if(!counter) {strcpy(word, token); counter++;}
+           if(!counter) {wcscpy(word, token); counter++;}
             else {
-                prob = atof(token);
+
+                prob = wcstod(token, NULL);
                 insertMapPrev(mp, prev, word, prob);
                 counter = 0;
             }
-            token = strtok(NULL, ",");
-            
+            token = wcstok(NULL, L",", &pt);
+ 
         }
-        
 
     }
 

@@ -14,6 +14,32 @@ int valid_identifier_start(char ch)
             ( ch >= 0xc0));
 }
 
+wchar_t * readLine(FILE *stream)
+{
+    wchar_t * buffer = NULL;
+    size_t size = 0;
+    wchar_t * newline_found = NULL;  
+ 
+    do
+    {   
+        
+        if( (buffer = realloc(buffer, size + BUFSIZ))  == NULL) {
+            perror("Error: ");
+            exit(EXIT_FAILURE);
+        }
+        // End of file reached
+        if ( (fgetws(buffer + size, BUFSIZ, stream)) == NULL) {
+            return buffer;
+        }
+
+        // Check if newline is reached
+        newline_found = wcschr(buffer + size, L'\n');
+    } while (!newline_found && (size += BUFSIZ)); // Re-iterate until newline is not reached or EOF is reached
+
+ 
+    return buffer;
+}
+
 char * getFileExtension(char * filename) {
 
     char * dot = strrchr(filename, '.');
