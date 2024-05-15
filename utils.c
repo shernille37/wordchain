@@ -73,7 +73,7 @@ char * changeFileExtension(char * filename, char * newExtension) {
 
 }
 
-char * pickRandomSeparator() {
+wchar_t * pickRandomSeparator() {
 
     srand(time(0));
     // Pick random number between 0 and 1
@@ -81,7 +81,7 @@ char * pickRandomSeparator() {
 
     for(int i = 0; i < 3; i ++)random = (double )rand() / (double )RAND_MAX;
     
-    char *separators[] = {"!", ".", "?"};
+    wchar_t *separators[] = {L"!", L".", L"?"};
     double probs[] = {0.333333, 0.333333, 0.333333};
 
     

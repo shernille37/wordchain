@@ -144,6 +144,10 @@ void readCsv(MapPrev *mp, char * filename) {
 
     FILE *csvFile;
 
+    wchar_t * prev;
+    wchar_t * word;
+    double prob;
+
     // Check if the filename provided is a CSV file
     if( strcmp( getFileExtension(filename), "csv" ) != 0 ) {
         printf("The filename shoud be a CSV file!\n");
@@ -155,10 +159,6 @@ void readCsv(MapPrev *mp, char * filename) {
         exit(EXIT_FAILURE);
     }
 
-
-    wchar_t * prev;
-    wchar_t * word;
-    double prob;
 
     if ((prev = malloc(30 * sizeof(wchar_t))) == NULL) {
         perror("Error:");
@@ -206,22 +206,34 @@ void readCsv(MapPrev *mp, char * filename) {
 
 void produceText(MapPrev *mp, int nWords, char * prevWord) {
 
-    char * word = malloc(30);
+    wchar_t * word;
     FILE *output;
+    
+    if( (word = malloc(30 * sizeof(wchar_t))) == NULL) {
+        perror("Error:");
+        exit(EXIT_FAILURE);
+    }
+
 
     if((output = fopen("output.txt", "w+")) == NULL) {
         perror("Error:");
         exit(EXIT_FAILURE);
     }
 
-    if(prevWord == NULL) word = strdup(pickRandomSeparator());
+    if(prevWord == NULL) word = wcsdup(pickRandomSeparator());
     else {
-        toLowerString(prevWord);
-        word = strdup(prevWord);
+        // Convert multibyte to wchar_t
+        size_t wordLength = strlen(prevWord) + 1;
+        wchar_t * wc = malloc(wordLength * sizeof(wchar_t));
+        mbstowcs(wc, prevWord, wordLength);
+
+        toLowerString(wc);
+        word = wcsdup(wc);
+        free(wc);
     }
     
     if(!searchMapPrev(mp, word)) {
-        printf("Word entered not found: %s\n", word);
+        wprintf(L"Word entered not found: %ls\n", word);
         exit(EXIT_FAILURE);
     }
 
@@ -234,11 +246,11 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
 
         while(currPrevDict != NULL) {
     
-            if(strcmp(currPrevDict->word, word) == 0) {
+            if(wcscmp(currPrevDict->word, word) == 0) {
                 
 
                 MapFrequency *currMapFreq = currPrevDict->frequencyDict;
-                char **words = malloc((currMapFreq->size) * sizeof(char *));
+                wchar_t ** words = (wchar_t **)malloc((currMapFreq->size) * sizeof(wchar_t *));
                 double *probs = malloc((currMapFreq->size) * sizeof(double));
 
 
@@ -249,7 +261,7 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
 
                     while(currDict != NULL) {
                         
-                        words[counter] = currDict->word;
+                        words[counter] = wcsdup(currDict->word);
                         probs[counter] = currDict->frequency;
 
                         counter++;
@@ -260,18 +272,18 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 }
 
                 int nextWordIndex = randomIndexGenerator(probs, counter);
-                char * nextWord = words[nextWordIndex];
+                wchar_t * nextWord = words[nextWordIndex];
                 toLowerString(nextWord);
 
-                if(strcmp(word, ".") == 0 || strcmp(word, "!") == 0 || strcmp(word, "?") == 0) {
-                    strcpy(word, nextWord);
-                    nextWord[0] = toupper(nextWord[0]);
+                if(wcscmp(word, L".") == 0 || wcscmp(word, L"!") == 0 || wcscmp(word, L"?") == 0) {
+                    wcscpy(word, nextWord);
+                    nextWord[0] = towupper(nextWord[0]);
 
-                    fprintf(output, "%s ", nextWord);
+                    fwprintf(output, L"%ls ", nextWord);
 
                 } else {
-                 strcpy(word, nextWord);
-                 fprintf(output, "%s ", nextWord);   
+                 wcscpy(word, nextWord);
+                 fwprintf(output, L"%ls ", nextWord);   
                 }
 
                 if((nWords % 20) == 0) fprintf(output, "\n");

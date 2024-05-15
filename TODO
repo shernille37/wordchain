@@ -1,8 +1,3 @@
-writeText.c
-
-If prevWord is not provided, pick randomly between . ? !
-
-Study the getopt for the command line analysis
-Handle utf-8 chars
+Error Handlers
 
 Multiprocess version

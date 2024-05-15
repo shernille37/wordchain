@@ -102,8 +102,8 @@ int main(int argc, char *argv[]) {
         // Compito 2
 
         readCsv(mp, filename);
-        printMapPrev(mp);
-        //produceText(mp, nWords, prevWord);
+        //printMapPrev(mp);
+        produceText(mp, nWords, prevWord);
     }
 
         
