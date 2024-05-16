@@ -195,6 +195,7 @@ void readCsv(MapPrev *mp, char * filename) {
  
         }
 
+        free(line);
     }
 
     free(prev);
@@ -238,7 +239,6 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
     }
 
     srand(time(0));
-
     while(nWords--) {
 
         unsigned int index = hash(word, mp->nBuckets);
@@ -248,7 +248,6 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
     
             if(wcscmp(currPrevDict->word, word) == 0) {
                 
-
                 MapFrequency *currMapFreq = currPrevDict->frequencyDict;
                 wchar_t ** words = (wchar_t **)malloc((currMapFreq->size) * sizeof(wchar_t *));
                 double *probs = malloc((currMapFreq->size) * sizeof(double));
@@ -286,15 +285,15 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                  fwprintf(output, L"%ls ", nextWord);   
                 }
 
-                if((nWords % 20) == 0) fprintf(output, "\n");
 
+                if(nWords > 0 && (nWords % 20 == 0)) fprintf(output, "\n");
+                
                 free(probs);
                 free(words);
                 break;
 
             }
 
-                
             currPrevDict = currPrevDict->next;
 
         }

@@ -5,7 +5,6 @@ char * getFileExtension(char * filename);
 char * changeFileExtension(char * filename, char * newExtension);
 wchar_t * pickRandomSeparator();
 void removeZeros(char * str);
-int valid_identifier_start(char ch);
 void ifFirst(wchar_t ** firstword, int * first, wchar_t * word);
 int randomIndexGenerator(double * probs, int length);
 wchar_t * readLine(FILE *stream);

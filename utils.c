@@ -6,13 +6,6 @@
 #include <wchar.h>
 #include "utils.h"
 
-#define BUFFER_SIZE 1024
-
-int valid_identifier_start(char ch)
-{
-    return ((ch >= L'A' && ch <= L'Z') || (ch >= L'a' && ch <= L'z') ||
-            ( ch >= 0xc0));
-}
 
 wchar_t * readLine(FILE *stream)
 {
@@ -23,7 +16,7 @@ wchar_t * readLine(FILE *stream)
     do
     {   
         
-        if( (buffer = realloc(buffer, size + BUFSIZ))  == NULL) {
+        if( (buffer = realloc(buffer, (size + BUFSIZ) * sizeof(wchar_t)))  == NULL) {
             perror("Error: ");
             exit(EXIT_FAILURE);
         }
