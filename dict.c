@@ -3,7 +3,7 @@
 #include <string.h>
 #include "dict.h"
 
-// Hash Function
+// Hash Function for Strings
 unsigned int hash(const wchar_t * str, int bucketSize) {
     unsigned int hash = 5381;
     int c;
@@ -15,6 +15,7 @@ unsigned int hash(const wchar_t * str, int bucketSize) {
     return hash % bucketSize;
 }
 
+// Initialize MapPrev ( HashMap (<key: string><value: HashMap (<key:string><value:double>) >) )
 MapPrev * initMapPrev() {
     MapPrev * mp = malloc(sizeof(MapPrev));
     mp->buckets = (PrevDictionary **)calloc(DEFAULT_SIZE_BUCKET, sizeof(PrevDictionary*));
@@ -24,6 +25,7 @@ MapPrev * initMapPrev() {
     return mp;
 }
 
+// Function to resize PrevDictionary 
 void resizePrevDictionary(MapPrev * mp, int newSize) {
 
     PrevDictionary ** newBuckets = (PrevDictionary **)calloc(newSize, sizeof(PrevDictionary *));
@@ -52,6 +54,7 @@ void resizePrevDictionary(MapPrev * mp, int newSize) {
 
 }
 
+// Function to search for an entry in the HashMap
 int searchMapPrev(MapPrev *mp, wchar_t * word) {
 
     unsigned int index = hash(word, mp->nBuckets);
@@ -70,6 +73,7 @@ int searchMapPrev(MapPrev *mp, wchar_t * word) {
 
 }
 
+// Function to insert an entry in the HashMap
 void insertMapPrev(MapPrev * mp, wchar_t * prev, wchar_t * next, double prob) {
 
     // Resize if needed
@@ -107,6 +111,7 @@ void insertMapPrev(MapPrev * mp, wchar_t * prev, wchar_t * next, double prob) {
     mp->size++;
 }
 
+// Utility function to print the contents of the HashMap 
 void printMapPrev(MapPrev * mp) {
 
     for(int i = 0; i < mp->nBuckets; i++) {
@@ -151,7 +156,7 @@ void freeMapPrev(MapPrev * mp) {
 }
 
 
-// Dictionary Functionalities (HashMap)
+// Initialize MapFrequency HashMap( <key:string> <value: double> )
 MapFrequency * initMapFrequency() {
 
     MapFrequency * map = malloc(sizeof(MapFrequency));

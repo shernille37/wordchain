@@ -100,7 +100,7 @@ void writeCsv(MapPrev *mp, char * filename) {
                 }
             }
 
-            //Output words
+            //Print one line
             int countMapFreq = 0;
             for(int j = 0; j < currMapFreq->nBuckets; j++) {
 
@@ -274,6 +274,7 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 wchar_t * nextWord = words[nextWordIndex];
                 toLowerString(nextWord);
 
+                
                 if(wcscmp(word, L".") == 0 || wcscmp(word, L"!") == 0 || wcscmp(word, L"?") == 0) {
                     wcscpy(word, nextWord);
                     nextWord[0] = towupper(nextWord[0]);

@@ -121,13 +121,15 @@ void ifFirst(wchar_t ** firstword, int * first, wchar_t * word) {
 
 int randomIndexGenerator(double * probs, int length) {
 
+
     // Normalize the probabilities
     double sum = 0;
     for(int i = 0; i < length; i++) sum += probs[i];
     for(int i = 0; i < length; i++) probs[i] /= sum;
     // This line generates a random double  between 0 and 1
+    double random;
+    for(int i = 0; i < length; i++) random = (double )rand() / (double )RAND_MAX;
 
-    double random = (double )rand() / (double )RAND_MAX;
     double cum_prob = 0;
     for (int i = 0; i < length; i++) {
         cum_prob += probs[i];
