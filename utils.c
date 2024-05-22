@@ -4,6 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <wchar.h>
+#include "dict.h"
 #include "utils.h"
 
 
@@ -66,7 +67,7 @@ char * changeFileExtension(char * filename, char * newExtension) {
 
 }
 
-wchar_t * pickRandomSeparator() {
+wchar_t * pickRandomSeparator(MapPrev *mp) {
 
     srand(time(0));
     // Pick random number between 0 and 1
@@ -75,15 +76,37 @@ wchar_t * pickRandomSeparator() {
     for(int i = 0; i < 3; i ++)random = (double )rand() / (double )RAND_MAX;
     
     wchar_t *separators[] = {L"!", L".", L"?"};
-    double probs[] = {0.333333, 0.333333, 0.333333};
 
-    
-    double cum_prob = 0;
+    wchar_t ** presentSeparators = NULL;
+    double *probs = NULL;
+
+    int counter = 0;
     for(int i = 0; i < 3; i++) {
-        cum_prob += probs[i];
-        if(random < cum_prob) 
-            return separators[i];
+        if(searchMapPrev(mp, separators[i])) {
+            presentSeparators = (wchar_t **)realloc(presentSeparators, (counter + 1) * sizeof(wchar_t *));
+            presentSeparators[counter++] = separators[i];
+        }
     }
+
+    if(counter == 0) {
+        printf("There are no punctuations to choose from in the text!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i = 0; i < counter; i++) {
+        probs = realloc(probs, (i + 1) * sizeof(double));
+        probs[i] = (double)1/counter;
+    }
+
+    double cum_prob = 0;
+    for(int i = 0; i < counter; i++) {
+        cum_prob += probs[i];
+        if(random < cum_prob) return presentSeparators[i];
+    }
+
+    free(presentSeparators);
+    free(probs);
+
 
     // It shouldn't arrive here
     return NULL;
@@ -108,14 +131,10 @@ void toLowerString(wchar_t * str) {
     }
 
 }
-void ifFirst(wchar_t ** firstword, int * first, wchar_t * word) {
-
-    if((*first)) {
-        (*firstword) = wcsdup(word);
-        (*first) = 0;
-
-    }
-
+void firstWordHandler(wchar_t * firstword, wchar_t * prev, wchar_t * word) {
+    wcscpy(firstword, word);
+    //(*firstword) = wcsdup(word);
+    wcscpy(prev, word);
 }
 
 

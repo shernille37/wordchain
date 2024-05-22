@@ -62,8 +62,9 @@ int searchMapPrev(MapPrev *mp, wchar_t * word) {
     PrevDictionary *prevDict = mp->buckets[index];
 
     while(prevDict != NULL) {
-
-        if(wcscmp(prevDict->word, word) == 0) return 1;
+        
+        if(wcsncmp(prevDict->word, word, 30 * sizeof(wchar_t)) == 0) return 1;
+        
 
         prevDict = prevDict->next;
 
@@ -86,7 +87,7 @@ void insertMapPrev(MapPrev * mp, wchar_t * prev, wchar_t * next, double prob) {
 
     while(current != NULL) {
 
-        if(wcscmp(current->word, prev) == 0) {
+        if(wcsncmp(current->word, prev, 30 * sizeof(wchar_t)) == 0) {
             MapFrequency *currMap = current->frequencyDict;
             insertMapFrequency(currMap, next, prob);
             return;
@@ -214,7 +215,7 @@ void insertMapFrequency(MapFrequency * map, wchar_t * word, double prob) {
         while(current != NULL) {
 
             // Word Found
-            if(wcscmp(current->word, word) == 0) {
+            if(wcsncmp(current->word, word, 30 * sizeof(wchar_t)) == 0) {
                 current->frequency++;
                 return;
             }
