@@ -102,10 +102,15 @@ void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
 
 
     } 
-    else if(iswalpha(c) || c == L'\'') word[(*i)++] = c;
+    else if(iswalpha(c)) word[(*i)++] = c;
     else {
         (*state) = 2;
-        word[(*i)] = '\0';
+
+        if(c == L'\'') {
+            word[(*i)++] = c;
+            word[(*i)] = '\0';
+        } else
+            word[(*i)] = '\0';
 
         toLowerString(word);
 
