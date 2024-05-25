@@ -41,14 +41,11 @@ void readFile(MapPrev * mp, char * fileName) {
 
     }
 
-    if(state == 1) {
-        word[i+1] = '\0';
-        insertMapPrev(mp, word, firstWord, -1);
-    } else if (state == 2) {
-        toLowerString(word);
-        insertMapPrev(mp, word, firstWord , -1);
-    }
-
+    // Conditions to handle the word before reaching EOF signal
+    if(state == 1) 
+        insertMapPrev(mp, prev, firstWord, -1);
+    else if (state == 2)
+        insertMapPrev(mp, prev, firstWord , -1);
     else if(state == 3) {
         word[i] = '\0';
         toLowerString(word);
