@@ -289,8 +289,6 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 }
 
 
-                if(nWords > 0 && (nWords % 20 == 0)) fprintf(output, "\n");
-
                 free(words);
                 free(probs);
                 
