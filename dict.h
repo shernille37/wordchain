@@ -17,8 +17,6 @@ typedef struct {
 
 } MapFrequency; 
 
-// TODO 
-
 typedef struct PrevDictionary {
     wchar_t * word; // Key
     MapFrequency * frequencyDict; // Value

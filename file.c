@@ -268,7 +268,7 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 
                 wchar_t * nextWord = words[nextWordIndex];
                 toLowerString(nextWord);
-
+                
                 
                 if(wcsncmp(word, L".", sizeof(wchar_t)) == 0 || wcsncmp(word, L"!", sizeof(wchar_t)) == 0 || wcsncmp(word, L"?", sizeof(wchar_t)) == 0) {
                     wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
@@ -276,7 +276,7 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
 
                     fwprintf(output, L"%ls ", nextWord);
 
-                } else if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0) {
+                } else if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0 || wcsrchr(word, '\'') != NULL) {
 
                     fseek(output, -1, SEEK_END);
                     wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
