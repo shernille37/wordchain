@@ -6,6 +6,7 @@
 #include <locale.h>
 #include "dict.h"
 #include "file.h"
+#include "multiProcess.h"
 
 
 int main(int argc, char *argv[]) {
@@ -78,8 +79,18 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    if(!uniProcessFlag && !multiProcessFlag){
+        printf("Atleast 1 option is required: -u or -m\n");
+        exit(EXIT_FAILURE);
+    }
+
     if(compito1Flag && compito2Flag) {
         printf("Only 1 option is required: -c or -r\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if(!compito1Flag && !compito2Flag) {
+        printf("Atleast 1 option is required: -c or -r\n");
         exit(EXIT_FAILURE);
     }
 
@@ -88,26 +99,36 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    
 
-    // Initialize HashMap
-    MapPrev *mp = initMapPrev();
 
-    if(compito1Flag) {
-        // Compito 1
-        readFile(mp, filename);
-        //printMapPrev(mp);
-        writeCsv(mp, filename);
+    if(uniProcessFlag) {
 
-    } else if(compito2Flag) {
-        // Compito 2
+        // Initialize Data Structure (HashMap)
+        MapPrev *mp = initMapPrev();
+        if(compito1Flag) {
+            readFile(mp, filename, NULL);
+            //printMapPrev(mp);
+            writeCsv(mp, filename);
 
-        readCsv(mp, filename);
-        //printMapPrev(mp);
-        produceText(mp, nWords, prevWord);
+        } else if(compito2Flag) {
+
+            readCsv(mp, filename);
+            //printMapPrev(mp);
+            produceText(mp, nWords, prevWord);
+        }
+
+        freeMapPrev(mp);
+
+    } else {
+
+        if(compito1Flag) {
+            multiCompito1(filename);
+        }
+   
     }
 
         
-    freeMapPrev(mp);
     
     clock_t end = clock();
 

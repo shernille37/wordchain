@@ -1,6 +1,6 @@
 CC := gcc
 
-solution: main.o file.o dict.o states.o utils.o
+solution: main.o file.o dict.o states.o utils.o multiUtils.o multiProcess.o
 	$(CC) $^ -o $@
 
 %.o : %.c

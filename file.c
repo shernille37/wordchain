@@ -9,7 +9,7 @@
 #include "file.h"
 #include "utils.h"
 
-void readFile(MapPrev * mp, char * fileName) {
+void readFile(MapPrev * mp, char * fileName, FILE * pipe) {
 
     FILE *fp;
 
@@ -18,14 +18,15 @@ void readFile(MapPrev * mp, char * fileName) {
         perror("File Error");
         exit(0);
     }
+
     
-    wchar_t word[30 * sizeof(wchar_t)];
+    wchar_t word[WORD_SIZE];
 
     int first = 1;
-    wchar_t firstWord[30 * sizeof(wchar_t)];
+    wchar_t firstWord[WORD_SIZE];
 
     // Previous String
-    wchar_t prev[30 * sizeof(wchar_t)];
+    wchar_t prev[WORD_SIZE];
 
     int i = 0;
     wint_t c;
@@ -35,22 +36,32 @@ void readFile(MapPrev * mp, char * fileName) {
     while((c = fgetwc(fp) ) != EOF) {
         c = (wchar_t) c;
 
-        if(state == 1) STATE_1(&state,word, &i, c, mp, prev, firstWord, &first);
-        else if(state == 2) STATE_2(&state,word, &i, c, mp, prev, firstWord, &first);
-        else STATE_3(&state,word, &i, c, mp, prev, firstWord, &first);
+        if(state == 1) STATE_1(&state,word, &i, c, mp, prev, firstWord, &first, pipe);
+        else if(state == 2) STATE_2(&state,word, &i, c, mp, prev, firstWord, &first, pipe);
+        else STATE_3(&state,word, &i, c, mp, prev, firstWord, &first, pipe);
 
     }
 
-    // Conditions to handle the word before reaching EOF signal
-    if(state == 1) 
-        insertMapPrev(mp, prev, firstWord, -1);
-    else if (state == 2)
-        insertMapPrev(mp, prev, firstWord , -1);
+    // Conditions to handle the word after reaching EOF signal
+    if(state == 1) {
+        if(pipe) fwprintf(pipe, L"%ls\n", firstWord);
+        else insertMapPrev(mp, word, firstWord, -1);
+    }
+    else if (state == 2) {
+        if(pipe) fwprintf(pipe, L"%ls\n", firstWord);
+        else insertMapPrev(mp, word, firstWord, -1);
+    }
     else if(state == 3) {
         word[i] = '\0';
         toLowerString(word);
-        insertMapPrev(mp, prev, word , -1);
-        insertMapPrev(mp, word, firstWord, -1);
+
+        if(pipe) {
+            fwprintf(pipe, L"%ls\n", word);
+            fwprintf(pipe, L"%ls\n", firstWord);
+        } else {
+            insertMapPrev(mp, prev, word , -1);
+            insertMapPrev(mp, word, firstWord, -1);
+        }
     }
 
     return;
@@ -269,17 +280,16 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 wchar_t * nextWord = words[nextWordIndex];
                 toLowerString(nextWord);
                 
-                
-                if(wcsncmp(word, L".", sizeof(wchar_t)) == 0 || wcsncmp(word, L"!", sizeof(wchar_t)) == 0 || wcsncmp(word, L"?", sizeof(wchar_t)) == 0) {
-                    wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
-                    nextWord[0] = towupper(nextWord[0]);
-
-                    fwprintf(output, L"%ls ", nextWord);
-
-                } else if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0 || wcsrchr(word, '\'') != NULL) {
+                 if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0 || wcsrchr(word, '\'') != NULL) {
 
                     fseek(output, -1, SEEK_END);
                     wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
+                    fwprintf(output, L"%ls ", nextWord);
+
+                } else if(wcsncmp(word, L".", sizeof(wchar_t)) == 0 || wcsncmp(word, L"!", sizeof(wchar_t)) == 0 || wcsncmp(word, L"?", sizeof(wchar_t)) == 0) {
+                    wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
+                    nextWord[0] = towupper(nextWord[0]);
+
                     fwprintf(output, L"%ls ", nextWord);
 
                 }

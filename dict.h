@@ -1,5 +1,7 @@
-#include <wchar.h>
+#ifndef DICT_H
+#define DICT_H
 
+#include <wchar.h>
 #define DEFAULT_SIZE_BUCKET 16
 
 // Dictionary Structure
@@ -46,3 +48,4 @@ void printMapPrev(MapPrev * mp);
 void freeMapPrev(MapPrev * mp);
 
 
+#endif

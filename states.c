@@ -4,24 +4,23 @@
 #include "file.h"
 #include "utils.h"
 
-
 // State functionalities
 // State 1  ?,!,.
-void STATE_1(int * state, wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t * firstWord, int *first) {
+void STATE_1(int * state, wchar_t * word, int * i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t * firstWord, int *first, FILE * pipe) {
 
     if(c == L'?' || c == L'!' || c == L'.') {
         word[0] = c;
-        word[1] = '\0';
+        word[1] = L'\0';
         
         if(*first) {
-            firstWordHandler(firstWord, prev,word);
-            (*first) = 0;
-            (*i) = 0;
+            firstWordHandler(firstWord, prev, word, first, i);
             return;
         }
 
-        insertMapPrev(mp, prev, word, -1);
-        wcscpy(prev, word);
+        if(pipe) fwprintf(pipe, L"%ls\n", word);
+        else insertMapPrev(mp, prev, word, -1);
+
+        wcsncpy(prev, word, WORD_SIZE);
 
         (*i) = 0; 
 
@@ -37,23 +36,23 @@ void STATE_1(int * state, wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar
 
 
 // State 2 Separator
-void STATE_2(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t * firstWord, int *first) {
+void STATE_2(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t * firstWord, int *first, FILE * pipe) {
 
     if(c == L'?' || c == L'!' || c == L'.') {
 
         (*state) = 1;
         word[0] = c;
-        word[1] = '\0';
+        word[1] = L'\0';
 
         if(*first) {
-            firstWordHandler(firstWord, prev,word);
-            (*first) = 0;
-            (*i) = 0;
+            firstWordHandler(firstWord, prev, word, first, i);
             return;
         }
 
-        insertMapPrev(mp, prev, word, -1);
-        wcscpy(prev, word);
+        if(pipe) fwprintf(pipe, L"%ls\n", word);
+        else insertMapPrev(mp, prev, word, -1);
+
+        wcsncpy(prev, word, WORD_SIZE);
 
         (*i) = 0; 
 
@@ -68,37 +67,41 @@ void STATE_2(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
 
 
 // State 3 Letter
-void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t * firstWord, int *first) {
+void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_t * prev, wchar_t * firstWord, int *first, FILE * pipe) {
 
     if(c == L'?' || c == L'!' || c == L'.') {
         (*state) = 1;
-        word[(*i)] = '\0';
+        word[(*i)] = L'\0';
         toLowerString(word);
 
          if(*first) {
-            firstWordHandler(firstWord, prev,word);
-            (*first) = 0;
-            (*i) = 0;
-
-
+            firstWordHandler(firstWord, prev, word, first, i);
+            
             word[0] = c;
-            word[1] = '\0';
-            insertMapPrev(mp, prev, word, -1);
-            wcscpy(prev, word);
+            word[1] = L'\0';
+
+            if(pipe) fwprintf(pipe, L"%ls\n", word);
+            else insertMapPrev(mp, prev, word, -1);
+                        
+            wcsncpy(prev, word, WORD_SIZE);
             (*i) = 0;
 
             return;
         }
 
-        insertMapPrev(mp, prev, word, -1);
+        if(pipe) fwprintf(pipe, L"%ls\n", word);
+        else insertMapPrev(mp, prev, word, -1);
 
-        wcscpy(prev, word);
+        wcsncpy(prev, word, WORD_SIZE);
         (*i) = 0;
 
         word[0] = c;
-        word[1] = '\0';
-        insertMapPrev(mp, prev, word, -1);
-        wcscpy(prev, word);
+        word[1] = L'\0';
+
+        if(pipe) fwprintf(pipe, L"%ls\n", word);
+        else insertMapPrev(mp, prev, word, -1);
+
+        wcsncpy(prev, word, WORD_SIZE);
 
 
     } 
@@ -108,21 +111,22 @@ void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
 
         if(c == L'\'') {
             word[(*i)++] = c;
-            word[(*i)] = '\0';
+            word[(*i)] = L'\0';
         } else
-            word[(*i)] = '\0';
+            word[(*i)] = L'\0';
 
         toLowerString(word);
 
         if(*first) {
-            firstWordHandler(firstWord, prev,word);
-            (*first) = 0;
-            (*i) = 0;
+            firstWordHandler(firstWord, prev, word, first, i);
             return;
         }
 
-        insertMapPrev(mp, prev, word, -1);
-        wcscpy(prev, word);
+
+        if(pipe) fwprintf(pipe, L"%ls\n", word);
+        else insertMapPrev(mp, prev, word, -1);
+        
+        wcsncpy(prev, word, WORD_SIZE);
         (*i) = 0;
     } 
 

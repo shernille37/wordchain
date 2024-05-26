@@ -6,6 +6,7 @@
 #include <wchar.h>
 #include "dict.h"
 #include "utils.h"
+#include "file.h"
 
 
 wchar_t * readLine(FILE *stream)
@@ -131,10 +132,12 @@ void toLowerString(wchar_t * str) {
     }
 
 }
-void firstWordHandler(wchar_t * firstword, wchar_t * prev, wchar_t * word) {
-    wcscpy(firstword, word);
-    //(*firstword) = wcsdup(word);
-    wcscpy(prev, word);
+void firstWordHandler(wchar_t * firstword, wchar_t * prev, wchar_t * word, int * first, int * index) {
+    wcsncpy(firstword, word, WORD_SIZE);
+    wcsncpy(prev, word, WORD_SIZE);
+    (*first) = 0;
+    (*index) = 0;
+    
 }
 
 
