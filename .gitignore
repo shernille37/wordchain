@@ -1,9 +1,0 @@
-solution
-*.o
-*.py
-
-#csv files
-*.csv
-
-#txt files
-*.txt
