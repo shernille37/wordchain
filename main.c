@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
         if(compito1Flag) {
             readFile(mp, filename, NULL);
             //printMapPrev(mp);
-            writeCsv(mp, filename);
+            writeCsv(mp, filename, NULL);
 
         } else if(compito2Flag) {
 

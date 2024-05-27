@@ -7,6 +7,7 @@
 #include "multiProcess.h"
 #include "file.h"
 #include "dict.h"
+#include "utils.h"
 
 void multiCompito1(char * fileName) {
 
@@ -31,26 +32,26 @@ void multiCompito1(char * fileName) {
 
         printf("First Child Process\n");
 
-        close(pipe1[1]);
-        close(pipe2[0]);
+        close(pipe1[1]); // Close write end of pipe1
+        close(pipe2[0]); // Close read end of pipe2
 
         firstChildCompito1(pipe1, pipe2, fileName);
 
         close(pipe1[0]);
         close(pipe2[1]);
+
         exit(EXIT_SUCCESS);
 
     } else {
 
-        // Parent Process (Read File)
+        // Parent Process
+
         close(pipe1[0]);
         
         parentCompito1(pipe1, fileName);
 
         close(pipe1[1]);
 
-        // Wait for first child to finish before forking the second child process
-        wait(NULL);
 
         // Fork Second Child Process
         if( (pid2 = fork()) == -1 ) {
@@ -60,19 +61,25 @@ void multiCompito1(char * fileName) {
 
         // Second Child Process
         if(pid2 == 0) {
+
+            close(pipe1[0]);
+            close(pipe1[1]);
+
             close(pipe2[1]);
             printf("Second Child Process\n\n");
 
-            char buffer[1024];
-            read(pipe2[0], buffer, 1024);
-
-            printf("Second Child Received: %s\n", buffer);
-
+            secondChildCompito1(pipe2, fileName);
+            
             close(pipe2[0]);
             exit(EXIT_SUCCESS);
 
         } else {
+
+            close(pipe2[0]);
+            close(pipe2[1]);
             wait(NULL);
+            wait(NULL);
+
         }
 
     }

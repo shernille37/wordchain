@@ -23,12 +23,13 @@ wchar_t * readLine(FILE *stream)
             exit(EXIT_FAILURE);
         }
         // End of file reached
+        
         if ( (fgetws(buffer + size, BUFSIZ, stream)) == NULL) {
             return buffer;
         }
 
         // Check if newline is reached
-        newline_found = wcschr(buffer + size, L'\n');
+        newline_found = wcschr(buffer + size, '\n');
     } while (!newline_found && (size += BUFSIZ)); // Re-iterate until newline is not reached or EOF is reached
 
  

@@ -67,7 +67,7 @@ void readFile(MapPrev * mp, char * fileName, FILE * pipe) {
     return;
 }
 
-void writeCsv(MapPrev *mp, char * filename) {
+void writeCsv(MapPrev * mp, char * filename, FILE * pipe) {
 
     FILE *fout;
     char * newFileName = changeFileExtension(filename, "csv");
@@ -77,6 +77,7 @@ void writeCsv(MapPrev *mp, char * filename) {
         exit(EXIT_FAILURE);
     }
 
+
     int countMapPrev = 0;
     for(int i = 0; i < mp->nBuckets; i++) {
 
@@ -84,7 +85,11 @@ void writeCsv(MapPrev *mp, char * filename) {
 
 
         while(currPrevDict != NULL) {
-            fwprintf(fout, L"%ls,", currPrevDict->word);
+
+
+            if(pipe) fwprintf(pipe, L"%ls,\n", currPrevDict->word);
+            else fwprintf(fout, L"%ls,", currPrevDict->word);
+            
 
             // Compute Sum
             double sum = 0;
@@ -110,7 +115,11 @@ void writeCsv(MapPrev *mp, char * filename) {
                 Dictionary * currFreqDict = currMapFreq->buckets[j];
 
                 while(currFreqDict != NULL) {
-                    fwprintf(fout, L"%ls,", currFreqDict->word);
+
+
+
+                    if(pipe) fwprintf(pipe, L"%ls,\n", currFreqDict->word);
+                    else fwprintf(fout, L"%ls,", currFreqDict->word);
 
                     double prob = currFreqDict->frequency/sum;
                     //Convert the probability into a string to easily modify its format
@@ -118,25 +127,42 @@ void writeCsv(MapPrev *mp, char * filename) {
 
                     // Remove trailing zeros while maintaining the significant digits
                     removeZeros(n);
-                    fprintf(fout, "%s", n);
-                    
+
+                    size_t probLength = strlen(n) + 1;
+                    wchar_t * wc = malloc(probLength * sizeof(wchar_t));
+                    mbstowcs(wc, n, probLength);
+
+                    if(pipe) fwprintf(pipe, L"%ls\n", wc);
+                    else fwprintf(fout, L"%ls", wc);
+
+                       
                     countMapFreq++;
 
-                    if(countMapFreq < currMapFreq->size) fprintf(fout, ",");
+                    if(countMapFreq < currMapFreq->size) {
+                        if(pipe) fwprintf(pipe, L"%ls\n", L",");
+                        else fwprintf(fout, L"%ls", L",");
+                        
+                    }
                     currFreqDict = currFreqDict->next;
+                    
+                    free(wc);
                 }
             }
 
 
             countMapPrev++;
-            if(countMapPrev < mp->size) fprintf(fout, "\n");
+            if(countMapPrev < mp->size) {
+                if(pipe) fwprintf(pipe, L"%ls\n", L"-1");
+                else fwprintf(fout, L"%ls", L"\n"); 
+            }
             
             currPrevDict = currPrevDict->next;
 
         }
 
     }
-
+    
+    
     free(newFileName);
     fclose(fout);
 
