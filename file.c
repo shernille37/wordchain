@@ -128,32 +128,27 @@ void writeCsv(MapPrev * mp, char * filename, FILE * pipe) {
                     // Remove trailing zeros while maintaining the significant digits
                     removeZeros(n);
 
-                    size_t probLength = strlen(n) + 1;
-                    wchar_t * wc = malloc(probLength * sizeof(wchar_t));
-                    mbstowcs(wc, n, probLength);
-
-                    if(pipe) fwprintf(pipe, L"%ls\n", wc);
-                    else fwprintf(fout, L"%ls", wc);
+                    if(pipe) fprintf(pipe, "%s\n", n);
+                    else fprintf(fout, "%s", n);
 
                        
                     countMapFreq++;
 
                     if(countMapFreq < currMapFreq->size) {
-                        if(pipe) fwprintf(pipe, L"%ls\n", L",");
-                        else fwprintf(fout, L"%ls", L",");
+                        if(pipe) fprintf(pipe, "%s\n", ",");
+                        else fprintf(fout, "%s", ",");
                         
                     }
                     currFreqDict = currFreqDict->next;
                     
-                    free(wc);
                 }
             }
 
 
             countMapPrev++;
             if(countMapPrev < mp->size) {
-                if(pipe) fwprintf(pipe, L"%ls\n", L"-1");
-                else fwprintf(fout, L"%ls", L"\n"); 
+                if(pipe) fprintf(pipe, "%s\n", "-1");
+                else fprintf(fout, "%s", "\n"); 
             }
             
             currPrevDict = currPrevDict->next;

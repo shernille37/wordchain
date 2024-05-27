@@ -53,11 +53,8 @@ void firstChildCompito1(int pipe1[2], int pipe2[2], char * fileName) {
     insertMapPrev(map, buffer, firstWord, -1);
 
 
-    //setvbuf(pipeWrite2, NULL, _IONBF, 0);
-
-    // TODO SEND DATA TO PROCESS 2
+    // Send the CSV format to second child for printing
     writeCsv(map, fileName, pipeWrite2);
-
 
     fclose(pipeRead1);
     
@@ -84,8 +81,8 @@ void secondChildCompito1(int pipe2[2], char * fileName) {
         size_t len = wcslen(buffer);
         if(buffer[len - 1] == L'\n') buffer[len - 1] = '\0';
 
-        if(wcsncmp(buffer, L"-1", WORD_SIZE) == 0) fwprintf(foutCsv, L"\n");
-        else fwprintf(foutCsv,L"%ls", buffer);
+        if(wcsncmp(buffer, L"-1", WORD_SIZE) == 0) fprintf(foutCsv, "\n");
+        else fwprintf(foutCsv, L"%ls", buffer);
         
     }
 
