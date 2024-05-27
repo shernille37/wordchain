@@ -30,10 +30,8 @@ void multiCompito1(char * fileName) {
     // First Child Process
     if(pid1 == 0) {
 
-        printf("First Child Process\n");
-
-        close(pipe1[1]); // Close write end of pipe1
-        close(pipe2[0]); // Close read end of pipe2
+        close(pipe1[1]); 
+        close(pipe2[0]); 
 
         firstChildCompito1(pipe1, pipe2, fileName);
 
@@ -66,7 +64,6 @@ void multiCompito1(char * fileName) {
             close(pipe1[1]);
 
             close(pipe2[1]);
-            printf("Second Child Process\n\n");
 
             secondChildCompito1(pipe2, fileName);
             

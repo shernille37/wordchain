@@ -84,10 +84,9 @@ void secondChildCompito1(int pipe2[2], char * fileName) {
         size_t len = wcslen(buffer);
         if(buffer[len - 1] == L'\n') buffer[len - 1] = '\0';
 
-        if(wcsncmp(buffer, L"-1", WORD_SIZE) == 0) fwprintf(foutCsv,L"\n");
+        if(wcsncmp(buffer, L"-1", WORD_SIZE) == 0) fwprintf(foutCsv, L"\n");
         else fwprintf(foutCsv,L"%ls", buffer);
         
-
     }
 
     free(newFileName);
