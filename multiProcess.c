@@ -9,7 +9,7 @@
 #include "dict.h"
 #include "utils.h"
 
-void multiCompito1(char * fileName) {
+void multiProcessi(char * fileName, int compito1Flag) {
 
     pid_t pid1;
     pid_t pid2;
@@ -33,7 +33,7 @@ void multiCompito1(char * fileName) {
         close(pipe1[1]); 
         close(pipe2[0]); 
 
-        firstChildCompito1(pipe1, pipe2, fileName);
+        if(compito1Flag) firstChildCompito1(pipe1, pipe2, fileName);
 
         close(pipe1[0]);
         close(pipe2[1]);
@@ -46,7 +46,7 @@ void multiCompito1(char * fileName) {
 
         close(pipe1[0]);
         
-        parentCompito1(pipe1, fileName);
+        if(compito1Flag) parentCompito1(pipe1, fileName);
 
         close(pipe1[1]);
 
@@ -65,7 +65,7 @@ void multiCompito1(char * fileName) {
 
             close(pipe2[1]);
 
-            secondChildCompito1(pipe2, fileName);
+            if(compito1Flag) secondChildCompito1(pipe2, fileName);
             
             close(pipe2[0]);
             exit(EXIT_SUCCESS);

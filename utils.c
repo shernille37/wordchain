@@ -4,6 +4,8 @@
 #include <time.h>
 #include <ctype.h>
 #include <wchar.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 #include "dict.h"
 #include "utils.h"
 #include "file.h"
@@ -69,13 +71,7 @@ char * changeFileExtension(char * filename, char * newExtension) {
 
 }
 
-wchar_t * pickRandomSeparator(MapPrev *mp) {
-
-    srand(time(0));
-    // Pick random number between 0 and 1
-    double random;
-
-    for(int i = 0; i < 3; i ++)random = (double )rand() / (double )RAND_MAX;
+wchar_t * pickRandomSeparator(MapPrev *mp, gsl_rng * r) {
     
     wchar_t *separators[] = {L"!", L".", L"?"};
 
@@ -100,18 +96,17 @@ wchar_t * pickRandomSeparator(MapPrev *mp) {
         probs[i] = (double)1/counter;
     }
 
-    double cum_prob = 0;
-    for(int i = 0; i < counter; i++) {
-        cum_prob += probs[i];
-        if(random < cum_prob) return presentSeparators[i];
-    }
+    gsl_ran_discrete_t* dist = gsl_ran_discrete_preproc(counter, probs);
 
+    int index = gsl_ran_discrete(r, dist);
+    wchar_t * pickedSeparator = presentSeparators[index];
+
+    gsl_ran_discrete_free(dist);
+    
     free(presentSeparators);
     free(probs);
 
-
-    // It shouldn't arrive here
-    return NULL;
+    return pickedSeparator;
 
 }
 
@@ -139,26 +134,4 @@ void firstWordHandler(wchar_t * firstword, wchar_t * prev, wchar_t * word, int *
     (*first) = 0;
     (*index) = 0;
     
-}
-
-
-int randomIndexGenerator(double * probs, int length) {
-
-
-    // Normalize the probabilities
-    double sum = 0;
-    for(int i = 0; i < length; i++) sum += probs[i];
-    for(int i = 0; i < length; i++) probs[i] /= sum;
-    // This line generates a random double  between 0 and 1
-    double random;
-    for(int i = 0; i < length; i++) random = (double )rand() / (double )RAND_MAX;
-
-    double cum_prob = 0;
-    for (int i = 0; i < length; i++) {
-        cum_prob += probs[i];
-        if (random < cum_prob)
-            return i;
-    }
-
-    return -1;
 }

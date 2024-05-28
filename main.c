@@ -122,9 +122,8 @@ int main(int argc, char *argv[]) {
 
     } else {
 
-        if(compito1Flag) {
-            multiCompito1(filename);
-        }
+        multiProcessi(filename, compito1Flag);
+        
    
     }
 

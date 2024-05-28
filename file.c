@@ -3,8 +3,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
 #include <ctype.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+
 #include "dict.h"
 #include "file.h"
 #include "utils.h"
@@ -168,8 +170,8 @@ void readCsv(MapPrev *mp, char * filename) {
 
     FILE *csvFile;
 
-    wchar_t * prev;
-    wchar_t * word;
+    wchar_t prev[WORD_SIZE];
+    wchar_t word[WORD_SIZE];
     double prob;
 
     // Check if the filename provided is a CSV file
@@ -183,17 +185,6 @@ void readCsv(MapPrev *mp, char * filename) {
         exit(EXIT_FAILURE);
     }
 
-
-    if ((prev = malloc(30 * sizeof(wchar_t))) == NULL) {
-        perror("Error:");
-        exit(EXIT_FAILURE);
-    }   
-    if ((word = malloc(30 * sizeof(wchar_t))) == NULL) {
-        perror("Error:");
-        exit(EXIT_FAILURE);
-    }
-
-
     while(!feof(csvFile)) {
 
         wchar_t * line = readLine(csvFile);
@@ -201,7 +192,7 @@ void readCsv(MapPrev *mp, char * filename) {
         wchar_t * pt;
         wchar_t * token = wcstok(line, L",", &pt);
 
-        prev = wcsdup(token);
+        wcsncpy(prev, token, WORD_SIZE);
 
         token = wcstok(NULL, L",", &pt);
 
@@ -222,8 +213,6 @@ void readCsv(MapPrev *mp, char * filename) {
         free(line);
     }
 
-    free(prev);
-    free(word);
     fclose(csvFile);
 
 }
@@ -231,16 +220,21 @@ void readCsv(MapPrev *mp, char * filename) {
 
 void produceText(MapPrev *mp, int nWords, char * prevWord) {
 
-    FILE *output;
+    // Initialize the random number generator
+    gsl_rng_env_setup();
+    gsl_rng* r = gsl_rng_alloc(gsl_rng_default);
+    gsl_rng_set(r, time(NULL)); // Seed the random number generator
 
-    wchar_t word[30 * sizeof(wchar_t)];
-    
+
+    FILE *output;
+    wchar_t word[WORD_SIZE];
+
     if((output = fopen("output.txt", "w+")) == NULL) {
         perror("File Creation Error:");
         exit(EXIT_FAILURE);
     }
 
-    if(prevWord == NULL) wcsncpy(word, pickRandomSeparator(mp), sizeof(wchar_t));
+    if(prevWord == NULL) wcsncpy(word, pickRandomSeparator(mp, r), sizeof(wchar_t));
     else {
         // Convert multibyte to wchar_t
         size_t wordLength = strlen(prevWord) + 1;
@@ -249,18 +243,17 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
         mbstowcs(wc, prevWord, wordLength);
 
         toLowerString(wc);
-        wcsncpy(word, wc, 30 * sizeof(wchar_t));
+        wcsncpy(word, wc, WORD_SIZE);
         free(wc);
 
         if(!searchMapPrev(mp, word)) {
-        wprintf(L"Word entered not found: %ls\n", word);
-        exit(EXIT_FAILURE);
-    }
+            wprintf(L"Word entered not found: %ls\n", word);
+            exit(EXIT_FAILURE);
+        }
     
     }
-    
 
-    srand(time(0));
+
     while(nWords--) {
 
 
@@ -277,8 +270,6 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 wchar_t ** words = (wchar_t **)malloc(currMapFreq->size * sizeof(wchar_t *));
                 double * probs = malloc(currMapFreq->size * sizeof(double));
    
-
-
                 int counter = 0;
                 for(int i = 0; i < currMapFreq->nBuckets; i++) {
 
@@ -296,26 +287,29 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
 
                 }
 
-                int nextWordIndex = randomIndexGenerator(probs, counter);
-                
+                // Create a GSL discrete distribution from the probabilities
+                gsl_ran_discrete_t* dist = gsl_ran_discrete_preproc(currMapFreq->size, probs);
+
+                int nextWordIndex = gsl_ran_discrete(r, dist);
+
                 wchar_t * nextWord = words[nextWordIndex];
                 toLowerString(nextWord);
                 
                  if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0 || wcsrchr(word, '\'') != NULL) {
 
                     fseek(output, -1, SEEK_END);
-                    wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
+                    wcsncpy(word, nextWord, WORD_SIZE);
                     fwprintf(output, L"%ls ", nextWord);
 
                 } else if(wcsncmp(word, L".", sizeof(wchar_t)) == 0 || wcsncmp(word, L"!", sizeof(wchar_t)) == 0 || wcsncmp(word, L"?", sizeof(wchar_t)) == 0) {
-                    wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
+                    wcsncpy(word, nextWord, WORD_SIZE);
                     nextWord[0] = towupper(nextWord[0]);
 
                     fwprintf(output, L"%ls ", nextWord);
 
                 }
                 else {
-                 wcsncpy(word, nextWord, 30 * sizeof(wchar_t));
+                 wcsncpy(word, nextWord, WORD_SIZE);
                  fwprintf(output, L"%ls ", nextWord);   
                 }
 
@@ -323,6 +317,7 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
                 free(words);
                 free(probs);
                 
+                gsl_ran_discrete_free(dist);
                 break;
 
             }
@@ -334,6 +329,8 @@ void produceText(MapPrev *mp, int nWords, char * prevWord) {
     }
 
     printf("The text created is in the output.txt file!\n");
+
+    gsl_rng_free(r);
     fclose(output);
 
 }
