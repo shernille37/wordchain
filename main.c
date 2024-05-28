@@ -60,9 +60,9 @@ int main(int argc, char *argv[]) {
         
         case '?':
             if(optopt == 'f')
-                fprintf(stderr, "Option -%c requires an argument <filename>\n", optopt);
+                fprintf(stderr, "Option -%c requires an argument <Filename>\n", optopt);
             else if(optopt == 'n')
-                fprintf(stderr, "Option -%c requires an argument <number of words>\n", optopt);    
+                fprintf(stderr, "Option -%c requires an argument <Number Of Words>\n", optopt);    
             else if(optopt == 'p')
                 fprintf(stderr, "Option -%c requires an argument <Previous Word>\n", optopt);
             else if(isprint(optopt)) fprintf(stderr, "Unknown option -%c\n", optopt);
@@ -103,7 +103,6 @@ int main(int argc, char *argv[]) {
 
 
     if(uniProcessFlag) {
-
         // Initialize Data Structure (HashMap)
         MapPrev *mp = initMapPrev();
         if(compito1Flag) {
@@ -113,26 +112,20 @@ int main(int argc, char *argv[]) {
 
         } else if(compito2Flag) {
 
-            readCsv(mp, filename);
+            readCsv(mp, filename, NULL);
             //printMapPrev(mp);
-            produceText(mp, nWords, prevWord);
+            produceText(mp, nWords, prevWord, NULL);
         }
 
         freeMapPrev(mp);
 
-    } else {
-
-        multiProcessi(filename, compito1Flag);
-        
-   
-    }
-
-        
+    } else 
+        multiProcessi(filename, compito1Flag, nWords, prevWord);
     
-    clock_t end = clock();
 
+    clock_t end = clock();
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Time: %f ms\n", time_spent * 1000);
+    printf("Program executed in: %f ms\n", time_spent * 1000);
 
 
     return 0;

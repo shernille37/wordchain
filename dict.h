@@ -2,38 +2,76 @@
 #define DICT_H
 
 #include <wchar.h>
-#define DEFAULT_SIZE_BUCKET 16
+#define DEFAULT_SIZE_BUCKET 16      // Initial BUCKET SIZE for the HashMap
 
-// Dictionary Structure
+/*
+In this project I basically used:
+2 HashMap structures:
+
+- MapFrequency: count the frequency of words
+- MapPrev: store the previous words and words immediately after
+
+Collisions are managed using the Chaining Method(Linked List):
+
+*/
+
+
+
+/*
+(Key, Value) Entry for the HashMap
+Key: Word
+Value: Frequency
+*/
 typedef struct Dictionary {
     wchar_t * word; // Key
     double frequency; // Value
-    struct Dictionary * next;
+    struct Dictionary * next; // Pointer to the next entry
 
 } Dictionary;
 
+/*
+HashMap Structure to store the frequency of words in the input file.
+It stores the metadata of the HashMap
+*/
 typedef struct {
-    Dictionary ** buckets;
-    int nBuckets;
-    int size;
-
+    Dictionary ** buckets; // Array of Linked List (Buckets)
+    int nBuckets; // Number for Buckets
+    int size; // Load size of the HashMap
 } MapFrequency; 
 
+/*
+(Key, Value) Entry for the HashMap
+Key: Previous Word
+Value: Pointer to the HashMap that contains Word Frequencies
+*/
 typedef struct PrevDictionary {
     wchar_t * word; // Key
     MapFrequency * frequencyDict; // Value
-    struct PrevDictionary * next;
+    struct PrevDictionary * next; // Pointer to the next entry
 
 } PrevDictionary;
 
+/*
+HashMap Structure to store the previous words and the words immediately after
+It stores the metadata of the HashMap
+*/
 typedef struct {
-    PrevDictionary ** buckets;
-    int nBuckets;
-    int size;
+    PrevDictionary ** buckets; // Array of Linked List (Buckets)
+    int nBuckets; // Number of Buckets
+    int size; // Load size
 } MapPrev;
 
+
+// Hash Function
 unsigned int hash(const wchar_t * str, int bucketSize);
 
+/*
+Functions of the HashMap:
+- Resize 
+- Insertion
+- Search
+- Free Map
+*/
 MapFrequency * initMapFrequency();
 void resizeDictionary(MapFrequency * map, int newSize);
 void insertMapFrequency(MapFrequency * map, wchar_t * word, double prob);
