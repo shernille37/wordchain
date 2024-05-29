@@ -406,7 +406,7 @@ void produceText(MapPrev *mp, int nWords, char * prevWord, FILE * pipe) {
                 */
 
 
-                if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0 || wcsrchr(word, '\'') != NULL) {
+                if (wcsncmp(nextWord, L".", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"!", sizeof(wchar_t)) == 0 || wcsncmp(nextWord, L"?", sizeof(wchar_t)) == 0 || wcsrchr(word, L'\'') != NULL || wcsrchr(word, L'’') != NULL) {
 
                     wcsncpy(word, nextWord, WORD_SIZE);
 
