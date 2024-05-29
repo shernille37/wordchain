@@ -31,7 +31,7 @@ void STATE_1(int * state, wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar
         (*i) = 0; 
 
     }
-    else if(iswalpha(c) || c == L'\''){ // If it's a valid letter
+    else if(iswalpha(c) || c == L'\'' || c == L'’'){ // If it's a valid letter
         (*state) = 3;
         word[(*i)++] = c;
     }
@@ -63,7 +63,7 @@ void STATE_2(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
 
         (*i) = 0; 
 
-    } else if(iswalpha(c) || c == L'\'') { // If it's a word
+    } else if(iswalpha(c) || c == L'\'' || c == L'’') { // If it's a word
         (*state) = 3;
         word[(*i)++] = c;
     } 
@@ -115,7 +115,7 @@ void STATE_3(int * state,wchar_t * word, int *i, wchar_t c, MapPrev * mp, wchar_
     else { // If it's a separator
         (*state) = 2;
 
-        if(c == L'\'') {
+        if(c == L'\'' || c == L'’') {
             word[(*i)++] = c;
             word[(*i)] = L'\0';
         } else

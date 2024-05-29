@@ -71,7 +71,7 @@ void multiProcessi(char * fileName, int compito1Flag, int nWords, char * prevWor
             close(pipe1[1]);
 
             close(pipe2[1]);
-
+            
             if(compito1Flag) secondChildCompito1(pipe2, fileName);
             else secondChildCompito2(pipe2, fileName);
             
