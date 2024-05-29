@@ -71,11 +71,7 @@ void readFile(MapPrev * mp, char * fileName, FILE * pipe) {
     }
 
     // Conditions to handle the word after reaching EOF signal
-    if(state == 1) {
-        if(pipe) fwprintf(pipe, L"%ls\n", firstWord);
-        else insertMapPrev(mp, word, firstWord, -1);
-    }
-    else if (state == 2) {
+    if(state == 1 || state == 2) {
         if(pipe) fwprintf(pipe, L"%ls\n", firstWord);
         else insertMapPrev(mp, word, firstWord, -1);
     }
