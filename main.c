@@ -2,8 +2,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <locale.h>
+
+
 #include "dict.h"
 #include "file.h"
 #include "multiProcess.h"
@@ -12,7 +13,6 @@
 int main(int argc, char *argv[]) {
 
     setlocale(LC_ALL, "en_US.UTF-8");
-    clock_t begin = clock();
 
     int opt;
     int uniProcessFlag = 0;
@@ -122,11 +122,6 @@ int main(int argc, char *argv[]) {
     } else 
         multiProcessi(filename, compito1Flag, nWords, prevWord);
     
-
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("Program executed in: %f ms\n", time_spent * 1000);
-
 
     return 0;
 }

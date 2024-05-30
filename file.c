@@ -196,7 +196,7 @@ void writeCsv(MapPrev * mp, char * filename, FILE * pipe) {
 
     }
     
-    
+    printf("CSV file generated: %s\n", newFileName);
     free(newFileName);
     fclose(fout);
 
