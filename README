@@ -59,11 +59,11 @@ output.txt
 Compito 1:
 
 • Mono-process version: 
-./project -u -c -f sample.txt                       Create the CSV file and it'll be named "sample.csv"
+./project -u -c -f sample.txt                       Create the CSV file with "sample.txt"
 
 
 • Multi-process version:
-./project -m -c -f sample.txt                       Create the CSV file with 3 processes and it'll be named "sample.csv"
+./project -m -c -f sample.txt                       Create the CSV file with "sample.txt" with 3 processes
 
 
 Compito 2:
