@@ -337,10 +337,10 @@ void produceText(MapPrev *mp, int nWords, char * prevWord, FILE * pipe) {
         wcsncpy(word, wc, WORD_SIZE);
         free(wc);
 
-        // Check if the previous word provided is present in the file, otherwise throw an error
+        // Check if the previous word provided is present in the file, otherwise pick a random separator
         if(!searchMapPrev(mp, word)) {
             wprintf(L"Word entered not found: %ls\n", word);
-            exit(EXIT_FAILURE);
+            wcsncpy(word, pickRandomSeparator(mp, r), sizeof(wchar_t));
         }
     
     }
@@ -435,7 +435,8 @@ void produceText(MapPrev *mp, int nWords, char * prevWord, FILE * pipe) {
 
                 // Free the discrete distribution
                 gsl_ran_discrete_free(dist);
-                break;
+
+                break; // Proceed to the next word
 
             }
 
