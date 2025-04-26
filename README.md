@@ -1,6 +1,6 @@
 ## Word Chain Aleatory
 
-> Generates word based on input data
+> Generates aleatory text based on input data
 
 
 File Included: 
