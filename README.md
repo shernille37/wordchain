@@ -1,5 +1,7 @@
 ## Word Chain Aleatory
 
+> Generates word based on input data
+
 
 File Included: 
 
